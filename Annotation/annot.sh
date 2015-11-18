@@ -114,7 +114,7 @@ fi
 echo $ctg_base
 # annotate genome
 prokka \
-	--outdir "$out_dir/${ctg_base%.fasta}" --force --compliant \
+	--outdir "$out_dir/${ctg_base%.fasta}" --force --compliant --centre SLU \
 	--genus Mycoplasma --species mycoides --strain "${ctg_base%.fasta}" \
 	--usegenus --gcode 4 --cpus 4 --locustag "${ctg_base%.fasta}" \
 	"$out_dir/$ctg_base.formatted.merged.fa"
@@ -128,7 +128,7 @@ mv "$out_dir/${ctg_base%.fasta}/$ctg_base.shifted.fa" \
 "$out_dir/$ctg_base.shifted.fa"
 # rm -rf "${out_dir:?}/${ctg_base%.fasta}/"
 prokka \
-	--outdir "$out_dir/${ctg_base%.fasta}_new" --force --compliant \
+	--outdir "$out_dir/${ctg_base%.fasta}_new" --force --compliant --centre SLU \
 	--genus Mycoplasma --species mycoides --strain "${ctg_base%.fasta}" \
 	--usegenus --gcode 4 --cpus 4 --locustag "${ctg_base%.fasta}" \
 	"$out_dir/$ctg_base.shifted.fa"
