@@ -87,7 +87,7 @@ command -v primer3 >/dev/null 2>&1 || { printf "Warning: primer3 is not \
 installed or is not in the PATH.\n" >&2; }
 
 # run abacas
-cd "$out_dir"
+cd "$out_dir" || exit 1
 abacas -r "$reference" -q "$contigs" -p nucmer -m >/dev/null 2>&1
 if [ "$?" != 0 ]
  	then
@@ -114,7 +114,7 @@ fi
 echo $ctg_base
 # annotate genome
 prokka \
-	--outdir "$out_dir/${ctg_base%.fasta}" --force \
+	--outdir "$out_dir/${ctg_base%.fasta}" --force --compliant \
 	--genus Mycoplasma --species mycoides --strain "${ctg_base%.fasta}" \
 	--usegenus --gcode 4 --cpus 4 --locustag "${ctg_base%.fasta}" \
 	"$out_dir/$ctg_base.formatted.merged.fa"
@@ -128,7 +128,7 @@ mv "$out_dir/${ctg_base%.fasta}/$ctg_base.shifted.fa" \
 "$out_dir/$ctg_base.shifted.fa"
 # rm -rf "${out_dir:?}/${ctg_base%.fasta}/"
 prokka \
-	--outdir "$out_dir/${ctg_base%.fasta}_new" --force \
+	--outdir "$out_dir/${ctg_base%.fasta}_new" --force --compliant \
 	--genus Mycoplasma --species mycoides --strain "${ctg_base%.fasta}" \
 	--usegenus --gcode 4 --cpus 4 --locustag "${ctg_base%.fasta}" \
 	"$out_dir/$ctg_base.shifted.fa"
