@@ -28,7 +28,7 @@ def ctg_merger(Input, Output, ctg_name):
     of = open(Output, 'w')
     name_ctg = f.readline()
     seq = f.readline()
-    of.writelines('>%s\n' % ctg_name[:-6])
+    of.writelines('>%s\n' % ctg_name[-21:-6])
     of.writelines(N)
     while seq:
         of.writelines(seq)
