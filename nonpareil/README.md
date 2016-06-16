@@ -1,2 +1,1 @@
-    docker pull hadrieng/Nonpareil
-    
+    docker pull hadrieng/nonpareil

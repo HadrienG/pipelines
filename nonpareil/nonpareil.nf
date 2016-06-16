@@ -1,28 +1,41 @@
 #!/usr/bin/env nextflow
 
+params {
+	in = "../data/sample.fastq"
+	adapt = ""
+}
+
 params.in = "../test/1P.fastq"
-params.adapt = "../test/adapters.fa"
+params.adapt = "../test/adapters.fasta"
 
 sequences = file(params.in)
 adapters = file(params.adapt)
 
-// only do that process if option adapters
+// should add condition of ion or illumina instead
 process adapter_trimming {
-	input:
-	file 'input.fastq' from sequences
-    file adapters
+	if (params.adapt =~ ".*fasta") {
+		input:
+		file 'input.fastq' from sequences
+	    file 'adapters.fasta' from adapters
 
-	output:
-	file 'adapt_trimmed.fastq' into adapt_trimmed
+		output:
+		file 'adapt_trimmed.fastq' into adapt_trimmed
 
-	"""
-	scythe -q sanger -a adapters -o adapt_trimmed.fastq input.fastq
-	"""
+		"""
+		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
+		"""
+	}
 }
 
 process quality_trimming {
-    input:
-    file 'adapt_trimmed.fastq' from adapt_trimmed
+	if (params.adapt =~ ".*fasta") {
+		input:
+		file 'adapt_trimmed.fastq' from adapt_trimmed
+	}
+	else {
+		input:
+		file 'input.fastq' from sequences
+	}
 
     output:
     file 'trimmed.fastq' into trimmed
@@ -40,13 +53,16 @@ process nonpareil {
     file 'nonpareil.npo' into nonpareil
 
     """
-    nonpareil -s trimmed.fasta -b nonpareil
+    nonpareil -s trimmed.fastq -b nonpareil -t 12
     """
 }
 
 process curves {
     input:
     file 'nonpareil.npo' from nonpareil
+
+	output:
+	file 'Rplots.pdf' into plot
 
     """
     #!/usr/bin/env Rscript

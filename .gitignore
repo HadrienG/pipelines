@@ -1,2 +1,5 @@
 # testing
 test/
+
+# mac OSX
+.DS_Store
