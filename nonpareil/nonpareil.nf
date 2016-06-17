@@ -7,6 +7,8 @@ sequences = file(params.reads)
 adapters = file(params.adapt)
 
 process adapter_trimming {
+    time = '1h'
+
     input:
     file 'input.fastq' from sequences
     file 'adapters.fasta' from adapters
@@ -27,6 +29,8 @@ process adapter_trimming {
 }
 
 process quality_trimming {
+    time = '1h'
+
     input:
     file 'adapt_trimmed.fastq' from adapt_trimmed
 
@@ -39,6 +43,8 @@ process quality_trimming {
 }
 
 process nonpareil {
+    time = '2h'
+
     input:
     file 'trimmed.fastq' from trimmed
 
@@ -51,6 +57,7 @@ process nonpareil {
 }
 
 process curves {
+    time = '1h'
     publishDir 'results'
 
     input:
