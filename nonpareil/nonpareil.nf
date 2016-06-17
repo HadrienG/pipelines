@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
-params.reads = 'data/sample.fastq'
+params.reads = 'data/ERR1135746.fastq'
 params.adapt = 'data/adapters.fasta'
-params.mode = 'ion'
+params.mode = 'illumina'
 
 sequences = file(params.reads)
 adapters = file(params.adapt)
@@ -13,16 +13,16 @@ process adapter_trimming {
     file 'adapters.fasta' from adapters
 
     output:
-    file "${input.baseName}_adapt" into adapt_trimmed
+    file "${input.baseName}.adapt" into adapt_trimmed
 
     script:
 	if( params.mode == 'illumina' )
 		"""
-		scythe -q sanger -a adapters.fasta -o "${input.baseName}_adapt" $input
+		scythe -q sanger -a adapters.fasta -o "${input.baseName}.adapt" $input
 		"""
 	else if( params.mode == 'ion' )
         """
-        cp input.fastq adapt_trimmed.fastq
+        cp $input "${input.baseName}.adapt"
         """
     else
         error "Invalid alignment mode: ${params.mode}"
@@ -34,10 +34,10 @@ process quality_trimming {
     file input from adapt_trimmed
 
     output:
-    file "${input.baseName}_trimmed" into trimmed
+    file "${input.baseName}.trimmed" into trimmed
 
     """
-    sickle se -f $input -t sanger -o "${input.baseName}_trimmed" -q 20
+    sickle se -f $input -t sanger -o "${input.baseName}.trimmed" -q 20
     """
 }
 
@@ -65,6 +65,8 @@ process curves {
     """
     #!/usr/bin/env Rscript
     library(Nonpareil)
-    Nonpareil.curve('nonpareil.npo')
+    pdf("${input.baseName}.pdf")
+    Nonpareil.curve('$input')
+    dev.off()
     """
 }

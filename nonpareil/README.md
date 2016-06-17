@@ -12,7 +12,7 @@ Then execute the workflow
 
     nextflow run nonpareil.nf
 
-It will produce a nonpareil curve for the sample data present in this directory
+It will produce a nonpareil curve for the sample data present in this directory.
 
 ### Pipeline parameters
 

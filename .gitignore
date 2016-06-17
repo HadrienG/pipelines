@@ -8,3 +8,4 @@ test/
 .nextflow.log*
 .nextflow.history
 work/
+results/
