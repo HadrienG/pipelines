@@ -9,16 +9,16 @@ adapters = file(params.adapt)
 
 process adapter_trimming {
     input:
-    file 'input.fastq' from sequences
+    file input from sequences
     file 'adapters.fasta' from adapters
 
     output:
-    file 'adapt_trimmed.fastq' into adapt_trimmed
+    file "${input.baseName}_adapt" into adapt_trimmed
 
     script:
 	if( params.mode == 'illumina' )
 		"""
-		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
+		scythe -q sanger -a adapters.fasta -o "${input.baseName}_adapt" $input
 		"""
 	else if( params.mode == 'ion' )
         """
@@ -31,25 +31,25 @@ process adapter_trimming {
 
 process quality_trimming {
     input:
-    file 'adapt_trimmed.fastq' from adapt_trimmed
+    file input from adapt_trimmed
 
     output:
-    file 'trimmed.fastq' into trimmed
+    file "${input.baseName}_trimmed" into trimmed
 
     """
-    sickle se -f adapt_trimmed.fastq -t sanger -o trimmed.fastq -q 20
+    sickle se -f $input -t sanger -o "${input.baseName}_trimmed" -q 20
     """
 }
 
 process nonpareil {
     input:
-    file 'trimmed.fastq' from trimmed
+    file input from trimmed
 
     output:
-    file 'nonpareil.npo' into nonpareil
+    file "${input.baseName}.npo" into nonpareil
 
     """
-    nonpareil -f fastq -s trimmed.fastq -b nonpareil -t 12
+    nonpareil -f fastq -s $input -b "${input.baseName}" -t 12
     """
 }
 
@@ -57,10 +57,10 @@ process curves {
     publishDir 'results'
 
     input:
-    file 'nonpareil.npo' from nonpareil
+    file input from nonpareil
 
 	output:
-	file 'Rplots.pdf' into plot
+	file "${input.baseName}.pdf" into plot
 
     """
     #!/usr/bin/env Rscript
