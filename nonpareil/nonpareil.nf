@@ -46,11 +46,13 @@ process nonpareil {
     file 'nonpareil.npo' into nonpareil
 
     """
-    nonpareil -s trimmed.fastq -b nonpareil -t 12
+    nonpareil -f fastq -s trimmed.fastq -b nonpareil -t 12
     """
 }
 
 process curves {
+    publishDir 'results'
+
     input:
     file 'nonpareil.npo' from nonpareil
 
