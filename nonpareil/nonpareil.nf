@@ -1,41 +1,34 @@
 #!/usr/bin/env nextflow
 
-params {
-	in = "../data/sample.fastq"
-	adapt = ""
-}
+params.reads = 'data/sample.fastq'
+params.adapt = 'data/adapters.fasta'
 
-params.in = "../test/1P.fastq"
-params.adapt = "../test/adapters.fasta"
-
-sequences = file(params.in)
+sequences = file(params.reads)
 adapters = file(params.adapt)
 
-// should add condition of ion or illumina instead
 process adapter_trimming {
-	if (params.adapt =~ ".*fasta") {
-		input:
-		file 'input.fastq' from sequences
-	    file 'adapters.fasta' from adapters
+    input:
+    file 'input.fastq' from sequences
+    file 'adapters.fasta' from adapters
 
-		output:
-		file 'adapt_trimmed.fastq' into adapt_trimmed
+    output:
+    file 'adapt_trimmed.fastq' into adapt_trimmed
 
+    script:
+	if(params.adapt == '.*fasta')
 		"""
 		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
 		"""
-	}
+	else
+        """
+        cp input.fastq adapt_trimmed.fastq
+        """
+
 }
 
 process quality_trimming {
-	if (params.adapt =~ ".*fasta") {
-		input:
-		file 'adapt_trimmed.fastq' from adapt_trimmed
-	}
-	else {
-		input:
-		file 'input.fastq' from sequences
-	}
+    input:
+    file 'adapt_trimmed.fastq' from adapt_trimmed
 
     output:
     file 'trimmed.fastq' into trimmed
