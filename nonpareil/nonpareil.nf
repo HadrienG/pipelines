@@ -1,5 +1,7 @@
 #!/usr/bin/env nextflow
 
+mode = 'ion'
+
 params.reads = 'data/sample.fastq'
 params.adapt = 'data/adapters.fasta'
 
@@ -7,8 +9,6 @@ sequences = file(params.reads)
 adapters = file(params.adapt)
 
 process adapter_trimming {
-    time = '1h'
-
     input:
     file 'input.fastq' from sequences
     file 'adapters.fasta' from adapters
@@ -17,7 +17,7 @@ process adapter_trimming {
     file 'adapt_trimmed.fastq' into adapt_trimmed
 
     script:
-	if(params.adapt == 'adapters.fasta')
+	if( mode == 'illumina' )
 		"""
 		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
 		"""
@@ -29,8 +29,6 @@ process adapter_trimming {
 }
 
 process quality_trimming {
-    time = '1h'
-
     input:
     file 'adapt_trimmed.fastq' from adapt_trimmed
 
@@ -43,8 +41,6 @@ process quality_trimming {
 }
 
 process nonpareil {
-    time = '2h'
-
     input:
     file 'trimmed.fastq' from trimmed
 
@@ -57,7 +53,6 @@ process nonpareil {
 }
 
 process curves {
-    time = '1h'
     publishDir 'results'
 
     input:
