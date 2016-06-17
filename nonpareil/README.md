@@ -19,7 +19,7 @@ It will produce a nonpareil curve for the sample data present in this directory.
 #### --reads
 
 * Specifies the location of the reads fastq file
-* By default it is set to data/sample.fastq
+* By default it is set to data/ERR1135746.fastq
 
 #### --mode
 * Specifies the mode for running the pipeline
