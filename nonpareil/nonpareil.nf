@@ -17,7 +17,7 @@ process adapter_trimming {
     file 'adapt_trimmed.fastq' into adapt_trimmed
 
     script:
-	if(params.adapt == '.*fasta')
+	if(params.adapt == 'adapters.fasta')
 		"""
 		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
 		"""
