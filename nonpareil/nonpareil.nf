@@ -1,9 +1,8 @@
 #!/usr/bin/env nextflow
 
-mode = 'ion'
-
 params.reads = 'data/sample.fastq'
 params.adapt = 'data/adapters.fasta'
+params.mode = 'ion'
 
 sequences = file(params.reads)
 adapters = file(params.adapt)
@@ -17,14 +16,16 @@ process adapter_trimming {
     file 'adapt_trimmed.fastq' into adapt_trimmed
 
     script:
-	if( mode == 'illumina' )
+	if( params.mode == 'illumina' )
 		"""
 		scythe -q sanger -a adapters.fasta -o adapt_trimmed.fastq input.fastq
 		"""
-	else
+	else if( params.mode == 'ion' )
         """
         cp input.fastq adapt_trimmed.fastq
         """
+    else
+        error "Invalid alignment mode: ${params.mode}"
 
 }
 

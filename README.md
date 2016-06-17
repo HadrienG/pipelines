@@ -9,7 +9,7 @@ To install nextflow (make sure you have java installed):
     curl -fsSL get.nextflow.io | bash
 
 
-The pipelines in this repository are organised in folders. You'll find the corresponding scripts and Dockerfile necessery for each pipeline in its repository.
+The pipelines in this repository are organised in folders. You'll find the corresponding scripts and documentation necessary for each pipeline in the corresponding repository.
 
 
-**Nonpareil:** 
+**Nonpareil:** Estimate average coverage and create Nonpareil curves for metagenomic datasets.
